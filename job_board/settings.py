@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'job_board.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'JobBoard_User',
+        'NAME': 'Job_Board_CustomUser',
         'USER': 'postgres',
         'PASSWORD': '1234',
         'HOST': 'localhost',
@@ -135,3 +135,11 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
+
+AUTH_USER_MODEL = 'accounts.CustomUser'  # Custom user model
+
+# Media files settings
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
