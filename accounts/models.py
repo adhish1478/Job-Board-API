@@ -40,7 +40,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
         return self.email
 
 def upload_to_resume(instance, filename):
-    return f'resumes/user_{instance.user.email}/{filename}'
+    return f'resumes/user_{instance.profile.user.email}/{filename}'
     #<form method="POST" enctype="multipart/form-data"> ---> only to be used in html forms later
     
 # Profile Model
@@ -49,13 +49,23 @@ class Profile(models.Model):
     full_name = models.CharField(max_length=100)
     bio = models.TextField(blank=True)
     phone = models.CharField(max_length=15, blank=True)
-    resume = models.FileField(upload_to= upload_to_resume, blank=True)
-    skills = models.TextField(blank=True)
 
-    '''# Recruiter specific (optional)
-    company_name = models.CharField(max_length=100, blank=True)
-    designation = models.CharField(max_length=100, blank=True)'''
 
     def __str__(self):
         return f"{self.user.email} Profile"
 
+class RecruiterProfile(models.Model):
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, related_name='recruiter')
+    company_name = models.CharField(max_length=100, blank=True)
+    designation = models.CharField(max_length=100, blank=True)
+
+    def __str__(self):
+        return f"{self.profile.full_name} Recruiter Profile"
+    
+class JobSeekerProfile(models.Model):
+    profile= models.OneToOneField(Profile, on_delete=models.CASCADE, related_name='job_seeker')
+    resume= models.FileField(upload_to=upload_to_resume, blank=True)
+    skills= models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.profile.full_name} Job Seeker Profile"
