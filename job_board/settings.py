@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',  # Custom user app
     'jobs',  # Job listings app
+    'applications',
     'rest_framework',  # Django REST framework for API
     'rest_framework_simplejwt',
 ]
