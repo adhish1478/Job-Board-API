@@ -50,3 +50,10 @@ class JobDetailView(APIView):
             return Response("Job not found", status= status.HTTP_404_NOT_FOUND)
         job.delete()
         return Response("Job deleted successfully", status= status.HTTP_204_NO_CONTENT)
+
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import AllowAny
+class PublicJobListView(ListAPIView):
+    queryset= Job.objects.all()
+    serializer_class= JobSerializer
+    permission_classes= [AllowAny]
