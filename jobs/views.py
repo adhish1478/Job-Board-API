@@ -51,9 +51,31 @@ class JobDetailView(APIView):
         job.delete()
         return Response("Job deleted successfully", status= status.HTTP_204_NO_CONTENT)
 
-from rest_framework.generics import ListAPIView
-from rest_framework.permissions import AllowAny
-class PublicJobListView(ListAPIView):
-    queryset= Job.objects.all()
-    serializer_class= JobSerializer
-    permission_classes= [AllowAny]
+
+
+#Filtering jobs and showing them to the public
+from .serializers import FilteredJobSerializer
+class FilteredJobListView(APIView):
+    def get(self, request):
+        jobs= Job.objects.all()
+
+        #Optional filtering
+        title = request.query_params.get('title')
+        location = request.query_params.get('location')
+        skills = request.query_params.get('skills')
+        min_salary = request.query_params.get('min_salary')
+        experience = request.query_params.get('min_experience')
+
+        if title:
+            jobs= jobs.filter(title__icontains= title)
+        if location:
+            jobs= jobs.filter(location__icontains= location)
+        if skills:
+            jobs= jobs.filter(skills_required__icontains= skills)
+        if min_salary:
+            jobs= jobs.filter(salary_range__gte= min_salary)
+        if experience:
+            jobs= jobs.filter(min_experience__lte= experience)
+
+        serializer= FilteredJobSerializer(jobs, many= True)
+        return Response(serializer.data, status= status.HTTP_200_OK)
