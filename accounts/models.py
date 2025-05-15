@@ -30,6 +30,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
     role= models.CharField(max_length=20, choices= ROLE_CHOICHES, default='job_seeker')
     is_active= models.BooleanField(default=True)
     is_staff= models.BooleanField(default=False)
+    is_verified= models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
 
     objects= CustomUserManager()
