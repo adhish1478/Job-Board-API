@@ -153,3 +153,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'adhisharavind48@gmail.com'
 EMAIL_HOST_PASSWORD = 'uqfp nawq jjea zxoz'  # Use environment variable for security
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Celery setup
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
