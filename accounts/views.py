@@ -5,7 +5,8 @@ from rest_framework import status
 from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import AllowAny
 from .models import Profile, RecruiterProfile, JobSeekerProfile
-from .utils import get_email_veriification_token, send_verification_email
+from .utils import get_email_veriification_token
+from .tasks import send_verification_mail_async
 
 User= get_user_model()
 # Create your views here.
@@ -24,7 +25,7 @@ class RegisterView(APIView):
         )
         #  Email verification logic here
         token= get_email_veriification_token(user)
-        send_verification_email(user, token)
+        send_verification_mail_async.delay(user.id, token)
         return Response({
             'message': 'User created successfully, Please check your email to verify your account.',
             'user': {
@@ -100,7 +101,7 @@ class ResendVerificationEmailView(APIView):
             if user.is_verified:
                 return Response({'message':'Email already verified'}, status=200)
             token= get_email_veriification_token(user)
-            send_verification_email(user, token)
+            send_verification_mail_async.delay(user.id, token)
 
             return Response({'message': 'Verification email sent successfully.'}, status=200)
         except User.DoesNotExist:
