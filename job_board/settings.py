@@ -11,21 +11,24 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+load_dotenv(dotenv_path=os.path.join(BASE_DIR, '.env'))
+print("DB HOST:", os.getenv("POSTGRES_HOST"))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-qt#6av@=&cbji5tqhfmqp1ubt0hn&u&uwja91c5p*$7^(!!2w+'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [['13.61.173.202', 'localhost', '127.0.0.1']]
 
 
 # Application definition
@@ -39,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',  # Custom user app
     'jobs',  # Job listings app
+    'applications',
     'rest_framework',  # Django REST framework for API
     'rest_framework_simplejwt',
 ]
@@ -80,11 +84,11 @@ WSGI_APPLICATION = 'job_board.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Job_Board_CustomUser',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('POSTGRES_DB', 'Job_Board_CustomUser'),
+        'USER': os.getenv('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', '1234'),
+        'HOST': os.getenv('POSTGRES_HOST','localhost'),
+        'PORT': os.getenv('POSTGRES_PORT', '5433'),
     }
 }
 
@@ -139,7 +143,21 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'accounts.CustomUser'  # Custom user model
 
 # Media files settings
-import os
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Use console backend for dev
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST= 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # Use environment variable for security
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # Use environment variable for security
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Celery setup
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
