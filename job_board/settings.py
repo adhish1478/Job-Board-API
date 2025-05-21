@@ -23,7 +23,7 @@ print("DB HOST:", os.getenv("POSTGRES_HOST"))
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-qt#6av@=&cbji5tqhfmqp1ubt0hn&u&uwja91c5p*$7^(!!2w+'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
