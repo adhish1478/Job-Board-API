@@ -12,6 +12,7 @@ jobs:
       postgres:
         image: postgres:14
         env:
+          POSTGRES_DB: Job_Board_CustomUser
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 1234
         ports:
@@ -19,11 +20,11 @@ jobs:
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
-          --health-timout 5s
+          --health-timeout 5s
           --health-retries 5
 
       redis:
-        iamge: redis:alpine
+        image: redis:alpine
         ports:
           - 6379:6379
 
@@ -44,7 +45,7 @@ jobs:
     - name: Build and Run containers
       run: docker-compose up -d --build
 
-    - name: Wait for db to be ready
+    - name: Wait for DB to be ready
       run: |
         for i in {1..10}; do
           docker exec job-board-api_db_1 pg_isready && break
@@ -55,5 +56,5 @@ jobs:
     - name: Run Tests
       run: docker-compose exec web python manage.py test accounts.tests.AccountsAPITestCase
 
-    - name: Tear downl
+    - name: Tear down
       run: docker-compose down
