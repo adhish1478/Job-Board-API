@@ -10,11 +10,11 @@ services:
       - "8000:8000"
     environment:
       - DEBUG=True
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_NAME=Job_Board_CustomUser
-      - DB_USER=postgres
-      - DB_PASSWORD=1234
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=Job_Board_CustomUser
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
 
   db:
     image: postgres:14
