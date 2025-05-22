@@ -1,20 +1,24 @@
+
 FROM python:3.11-slim
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the requirements file into the container and install dependencies
+# Install netcat for wait-for-db.sh
+RUN apt-get update && apt-get install -y netcat-openbsd && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-
-# Copy the rest of the application code into the container
+# Copy application code
 COPY . .
 
-# Install netcat for wait-for-db.sh
-RUN apt-get update && apt-get install -y netcat-openbsd
-# Expose the port the app runs on
+# Ensure wait-for-db.sh is executable
+RUN chmod +x wait-for-db.sh
+
+# Expose port
 EXPOSE 8000
 
-# Command to run the application
+# Entrypoint
 CMD ["./wait-for-db.sh", "sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]

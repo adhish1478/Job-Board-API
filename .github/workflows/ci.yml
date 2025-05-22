@@ -61,6 +61,9 @@ jobs:
           sleep 5
         done
 
+    - name: Wait for DB inside container
+      run: docker-compose exec web ./wait-for-db.sh
+
     - name: Run Tests
       run: docker-compose exec web python manage.py test accounts.tests.AccountsAPITestCase
 
