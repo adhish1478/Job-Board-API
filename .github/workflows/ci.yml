@@ -45,12 +45,14 @@ jobs:
         docker-compose --version
 
     - name: Build and Run containers
-      run: docker-compose up -d --build
+      run: |
+        echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" > .env
+        docker-compose up -d --build
 
     - name: Wait for DB to be ready
       run: |
         for i in {1..10}; do
-          dpg_isready -h localhost -p 5432 -U postgres && break
+          pg_isready -h localhost -p 5432 -U postgres && break
           echo "Waiting for Postgres..."
           sleep 5
         done
