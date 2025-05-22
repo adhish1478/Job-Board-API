@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 1234
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timout 5s
+          --health-retries 5
+
+      redis:
+        iamge: redis:alpine
+        ports:
+          - 6379:6379
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+
+    - name: Install Docker Compose
+      run: |
+        sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
+        docker-compose --version
+
+    - name: Build and Run containers
+      run: docker-compose up -d --build
+
+    - name: Wait for db to be ready
+      run: |
+        for i in {1..10}; do
+          docker exec job-board-api_db_1 pg_isready && break
+          echo "Waiting for Postgres..."
+          sleep 5
+        done
+
+    - name: Run Tests
+      run: docker-compose exec web python manage.py test accounts.tests.AccountsAPITestCase
+
+    - name: Tear downl
+      run: docker-compose down
