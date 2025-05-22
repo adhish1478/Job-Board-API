@@ -13,3 +13,5 @@ def send_verification_mail_async(user_id, token):
     reciepient_list= [user.email]
 
     send_mail(subject, message, from_email, reciepient_list)
+
+# This is just to test CI/CD workiflow
