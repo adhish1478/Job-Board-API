@@ -24,6 +24,8 @@ print("DB HOST:", os.getenv("POSTGRES_HOST"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    raise Exception("SECRET_KEY not found. Set it in the environment.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -87,11 +89,10 @@ DATABASES = {
         'NAME': os.getenv('POSTGRES_DB', 'Job_Board_CustomUser'),
         'USER': os.getenv('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', '1234'),
-        'HOST': os.getenv('POSTGRES_HOST','localhost'),
-        'PORT': os.getenv('POSTGRES_PORT', '5433'),
+        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+        'PORT': os.getenv('POSTGRES_PORT', os.getenv('DEFAULT_POSTGRES_PORT', '5433')),  # <-- 👈 fallback to 5433
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

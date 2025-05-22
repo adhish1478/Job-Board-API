@@ -9,7 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-
+      POSTGRES_DB: Job_Board_CustomUser
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      DEFAULT_POSTGRES_PORT: 5432
     services:
       postgres:
         image: postgres:14
