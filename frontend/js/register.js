@@ -10,6 +10,7 @@ document.getElementById("registerForm").addEventListener("submit", async functio
     try {
         const response= await fetch(host + "register/", {
             method: "POST",
+            mode: "cors",
             headers: {
                 "content-type" : "application/json"
             },

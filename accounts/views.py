@@ -15,6 +15,13 @@ User= get_user_model()
 class RegisterView(APIView):
     permission_classes= [AllowAny] # Open Endpoints
 
+    def options(self, request, *args, **kwargs):
+        response = Response(status=status.HTTP_200_OK)
+        response['Access-Control-Allow-Origin'] = '*'
+        response['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        response['Access-Control-Allow-Headers'] = 'Content-Type'
+        return response
+
     def post(self, request):
         data= request.data
         if User.objects.filter(email= data['email']).exists():
