@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',  # For handling CORS
 ]
-
+print("SETTINGS LOADED ON:", os.environ.get('DEPLOY_ENV', 'local'))
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # CORS middleware
     'django.middleware.common.CommonMiddleware',
