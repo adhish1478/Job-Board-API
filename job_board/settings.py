@@ -51,10 +51,10 @@ INSTALLED_APPS = [
 ]
 print("SETTINGS LOADED ON:", os.environ.get('DEPLOY_ENV', 'local'))
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # CORS middleware
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # CORS middleware
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
