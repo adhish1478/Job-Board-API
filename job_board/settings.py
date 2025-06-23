@@ -51,9 +51,9 @@ INSTALLED_APPS = [
 ]
 print("SETTINGS LOADED ON:", os.environ.get('DEPLOY_ENV', 'local'))
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # CORS middleware
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # CORS middleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -63,9 +63,9 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5500",
-    "http://56.228.30.131:8000"
+    "http://localhost:5500",
+    "http://56.228.30.131:8000",
 ]
-
 CORS_ALLOW_METHODS = [
     "GET",
     "POST",
