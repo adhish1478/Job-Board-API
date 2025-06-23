@@ -47,17 +47,22 @@ INSTALLED_APPS = [
     'applications',
     'rest_framework',  # Django REST framework for API
     'rest_framework_simplejwt',
+    'corsheaders',  # For handling CORS
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # CORS middleware
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins for CORS
+
 
 ROOT_URLCONF = 'job_board.urls'
 
