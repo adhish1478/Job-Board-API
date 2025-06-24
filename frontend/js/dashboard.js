@@ -50,25 +50,83 @@ function renderJobs(jobs) {
 
 async function applyToJob(jobId) {
     const token= localStorage.getItem('token');
+    selectedJobId= jobId;
+
     try {
-        const res= await fetch(host + `/apply/${jobId}/`, {
-            
-            method: 'POST',
-            headers: {
-                "Authorization": "Bearer " + token
+        const res= await fetch(host + '/profile/' ,{
+            headers:{
+                'Authorization': 'Bearer ' + token
             }
         });
 
-        if(res.ok) {
-            alert("application submitted");
+        const profile= await res.json();
+        const hasResume= profile.resume !== null && profile.resume !== "";
+
+        const modalBody= document.getElementById('modalBodyContent');
+        const resumeInput= document.getElementById('resumeInput');
+        resumeInput.hidden= true;
+
+        if (hasResume) {
+            modalBody.innerHTML=`
+            <p>You already have a resume uploaded. What would you like to do?</p>
+            <button type="button" class="btn btn-outline-primary me-2" onclick="useExistingResume()">Use Existing Resume</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="uploadNewResume()">Upload New Resume</button>
+            `;
         } else {
-            const data= await res.json();
-            alert(data.detail || "already submitted or error occured.");
+            modalBody.innerHTML= `<p>You haven’t uploaded a resume yet. Please upload one to apply.</p>`;
+            resumeInput.hidden= false;
         }
 
-    } catch (err) {
-        alert("error applying to job!", err)
+        new bootstrap.Modal(document.getElementById('resumeModal')).show()
+
+    } catch(err) {
+        alert("Couldn't load profile, please login again");
+        console.log('resume check failed!')
     }
 }
 
+function uploadNewResume() {
+    document.getElementById('resumeInput').hidden= false;
+}
+
+function useExistingResume() {
+    document.getElementById('resumeInput').hidden= true;
+}
+
+// Handle modal form submit
+document.getElementById('resumeForm').addEventListener("submit", async function (e) {
+    e.preventDefault();
+    
+    const token= localStorage.getItem('token')
+    const formData= new FormData();
+    const fileInput= document.getElementById('resumeInput');
+
+    if (!fileInput.hidden && fileInput.files.length > 0) {
+        formData.append("resume", fileInput.files[0]);
+    }
+
+    try {
+        const response= await fetch(`${host}/apply/${selectedJobId}/`, {
+            method: 'POST',
+            headers: {
+                Authorization: "Bearer " + token
+            },
+            body: formData
+        });
+
+        if(response.ok) {
+            alert("Application submitted succesfully!")
+            bootstrap.Modal.getInstance(document.getElementById('resumeModal')).hide();
+        } else {
+            const data= await response.json();
+            alert("Error: "+ (data.detail || "Couldn't apply."))
+        }
+    } catch (err) {
+        alert("Error applying to job!");
+        console.error(err);
+    }
+});
+
 fetchJobs();
+
+// resume popup and
