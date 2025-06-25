@@ -3,12 +3,12 @@ const host = "http://56.228.30.131:8000/api" // Base URL for the API
 async function fetchJobs() {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(host + "/jobs/", {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetchWithAuth(host + "/jobs/", {
+            method: 'GET'
+                //headers: {
+                //"Content-Type": "application/json",
                 //"Authorization": "Bearer " + token
-            }
+                //}
         });
 
         if (!response) throw new Error("Failed to fetch Jobs!");
@@ -61,11 +61,7 @@ async function applyToJob(jobId) {
     selectedJobId = jobId;
 
     try {
-        const res = await fetch(host + '/profile/', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        });
+        const res = await fetchWithAuth(host + '/profile/');
 
         const profile = await res.json();
         const hasResume = profile.resume !== null && profile.resume !== "";
@@ -114,11 +110,8 @@ document.getElementById('resumeForm').addEventListener("submit", async function(
     }
 
     try {
-        const response = await fetch(`${host}/apply/${selectedJobId}/`, {
+        const response = await fetchWithAuth(`${host}/apply/${selectedJobId}/`, {
             method: 'POST',
-            headers: {
-                Authorization: "Bearer " + token
-            },
             body: formData
         });
 
@@ -140,12 +133,12 @@ let appliedJobIds = []
 
 async function fetchAppliedJobs(token) {
     try {
-        const res = await fetch(host + '/my-applications/', {
-            headers: {
-                Authorization: "Bearer " + token
-            }
-        });
+        const res = await fetchWithAuth(host + '/my-applications/');
+        if (!res) throw new Error("Unauthorized or refresh failed");
+
         const data = await res.json();
+        if (!Array.isArray(data)) throw new Error("Invalid data structure");
+
         return data.map(app => app.job)
     } catch (err) {
         console.error("Failed to fetch applied jobs", err);
