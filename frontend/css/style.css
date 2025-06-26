@@ -41,3 +41,8 @@ body {
     opacity: 0.6;
     pointer-events: none;
 }
+
+.form-group {
+    display: inline-block;
+    width: 44%;
+}
