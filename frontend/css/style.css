@@ -46,3 +46,9 @@ body {
     display: inline-block;
     width: 44%;
 }
+
+.dropdown {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+}
